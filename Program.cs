@@ -2,7 +2,10 @@
 
 namespace HILLS2
 {
-
+    static class E
+    {
+        public const int mpty = 0;
+    }
     class Calculation
     {
         double delta;
@@ -11,14 +14,14 @@ namespace HILLS2
 
             if (data.PrepareControl())
             {
-                if (data.v1[0] == 0 && data.v1[1] == 0)
+                if (data.v1[0] == E.mpty && data.v1[1] == E.mpty)
                 {
                     data.v1[0] = data.v2[0];
                     data.v1[1] = data.v2[1];
                 }
                 else
                 {
-                    if (data.v2[0] != 0 && data.v2[1] != 0)
+                    if (data.v2[0] != E.mpty && data.v2[1] != E.mpty)
                     {
                         double alpha = GetAlpha(data.v1[0], data.v2[0]);
                         double a = data.v1[1];
@@ -79,7 +82,7 @@ namespace HILLS2
 
         public void EmptyStatus()
         {
-            int empty = 0;
+            int empty = E.mpty;
             v1[0] = empty;
             v1[1] = empty;
             v2[0] = empty;
@@ -89,19 +92,25 @@ namespace HILLS2
 
         public void DownloadData(Data data, int x, int y)
         {
-            if ((data.v2[0] == 0 && data.v2[1] == 0) || (x == 0 && y == 0))
+            if ((data.v2[0] == E.mpty && data.v2[1] == E.mpty) || (x == E.mpty && y == E.mpty))
             {
                 this.v2[0] = x;
                 this.v2[1] = y;
             }
-            else if (data.v2[0] == 0 && data.v2[1] != 0)
+            else if (data.v2[0] == E.mpty && data.v2[1] != E.mpty)
             {
                 this.v2[0] = x;
+                this.v2[1] = this.v2[1] + y;
+            }
+            else if (data.v2[0] != E.mpty && data.v2[1] == E.mpty)
+            {
+                this.v2[0] = this.v2[0] + x;
+                this.v2[1] = y;
             }
         }
         public bool PrepareControl()
         {
-            if (v2[0] == 0 && v2[1] == 0)
+            if (v2[0] == E.mpty && v2[1] == E.mpty)
             {
                 return false;
             }
@@ -143,7 +152,7 @@ namespace HILLS2
                 line = Console.ReadLine();
                 if (line == "PREPARE")
                 {
-                    data.DownloadData(data, 0, 0);
+                    data.DownloadData(data, E.mpty, E.mpty);
                     calculation.DoMath(data);
                 }
                 else
@@ -151,12 +160,12 @@ namespace HILLS2
                     orders = line.Split(" ");
                     if (orders[0] == "TURN")
                     {
-                        data.DownloadData(data, int.Parse(orders[1]), 0);
+                        data.DownloadData(data, int.Parse(orders[1]), E.mpty);
                         calculation.DoMath(data);
                     }
                     else if (orders[0] == "MOVE")
                     {
-                        data.DownloadData(data, 0, int.Parse(orders[1]));
+                        data.DownloadData(data, E.mpty, int.Parse(orders[1]));
                         calculation.DoMath(data);
                     }
                 }
