@@ -6,9 +6,8 @@ namespace HILLS2
     class Calculation
     {
         double delta;
-        public void DoMath()
+        public void DoMath(Data data)
         {
-            Data data = new Data();
 
             if (data.PrepareControl())
             {
@@ -19,15 +18,20 @@ namespace HILLS2
                 }
                 else
                 {
+                    if (data.v2[0] != 0 && data.v2[1] != 0)
+                    {
+                        double alpha = GetAlpha(data.v1[0], data.v2[0]);
+                        double a = data.v1[1];
+                        double b = data.v2[1];
 
-                    double alpha = GetAlpha(data.v1[0], data.v2[0]);
-                    double a = data.v1[1];
-                    double b = data.v2[1];
+                        data.EmptyStatus();
 
-                    data.EmptyStatus();
-
-                    data.v1[1] = Parallelogram(a, b, alpha);
-                    data.v1[0] = delta;
+                        data.v1[1] = Parallelogram(a, b, alpha);
+                        data.v1[0] = delta;
+                    }
+                    else
+                    {
+                    }
                 }
             }
             else
@@ -83,10 +87,17 @@ namespace HILLS2
 
         }
 
-        public void DownloadData(int x, int y)
+        public void DownloadData(Data data, int x, int y)
         {
-            this.v2[0] = x;
-            this.v2[1] = y;
+            if ((data.v2[0] == 0 && data.v2[1] == 0) || (x == 0 && y == 0))
+            {
+                this.v2[0] = x;
+                this.v2[1] = y;
+            }
+            else if (data.v2[0] == 0 && data.v2[1] != 0)
+            {
+                this.v2[0] = x;
+            }
         }
         public bool PrepareControl()
         {
@@ -102,7 +113,7 @@ namespace HILLS2
 
         public void PrintVectorValue()
         {
-            Console.WriteLine(v1[1]);
+            Console.WriteLine(String.Format("{0:0.00}", v1[1]).Replace(',','.'));
         }
 
     }
@@ -121,7 +132,7 @@ namespace HILLS2
 
         private void DoOrder()
         {
-            Data data =  new Data();
+            Data data = new Data();
             data.EmptyStatus();
             string line;
             string[] orders;
@@ -132,21 +143,21 @@ namespace HILLS2
                 line = Console.ReadLine();
                 if (line == "PREPARE")
                 {
-                    data.DownloadData(0, 0);
-                    calculation.DoMath();
+                    data.DownloadData(data, 0, 0);
+                    calculation.DoMath(data);
                 }
                 else
                 {
                     orders = line.Split(" ");
                     if (orders[0] == "TURN")
                     {
-                        data.DownloadData(int.Parse(orders[1]), 0);
-                        calculation.DoMath();
+                        data.DownloadData(data, int.Parse(orders[1]), 0);
+                        calculation.DoMath(data);
                     }
                     else if (orders[0] == "MOVE")
                     {
-                        data.DownloadData(0, int.Parse(orders[1]));
-                        calculation.DoMath();
+                        data.DownloadData(data, 0, int.Parse(orders[1]));
+                        calculation.DoMath(data);
                     }
                 }
             }
