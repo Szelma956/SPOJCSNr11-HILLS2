@@ -4,7 +4,7 @@ namespace HILLS2
 {
     static class E
     {
-        public const int mpty = 0;
+        public const int mpty = -1;
     }
     class Calculation
     {
@@ -16,8 +16,22 @@ namespace HILLS2
             {
                 if (data.v1[0] == E.mpty && data.v1[1] == E.mpty)
                 {
-                    data.v1[0] = data.v2[0];
-                    data.v1[1] = data.v2[1];
+                    if (data.v2[0] != E.mpty)
+                    {
+                        data.v1[0] = data.v2[0];
+                    }
+                    else
+                    {
+                        data.v1[0] = 0;
+                    }
+                    if (data.v2[1] != E.mpty)
+                    {
+                        data.v1[1] = data.v2[1];
+                    }
+                    else
+                    {
+                        data.v1[1] = 0;
+                    }
                 }
                 else
                 {
@@ -100,11 +114,17 @@ namespace HILLS2
             else if (data.v2[0] == E.mpty && data.v2[1] != E.mpty)
             {
                 this.v2[0] = x;
-                this.v2[1] = this.v2[1] + y;
+                if (y != E.mpty)
+                {
+                    this.v2[1] = this.v2[1] + y;
+                }
             }
             else if (data.v2[0] != E.mpty && data.v2[1] == E.mpty)
             {
-                this.v2[0] = this.v2[0] + x;
+                if (x != E.mpty)
+                {
+                    this.v2[0] = this.v2[0] + x;
+                }
                 this.v2[1] = y;
             }
         }
@@ -122,7 +142,14 @@ namespace HILLS2
 
         public void PrintVectorValue()
         {
-            Console.WriteLine(String.Format("{0:0.00}", v1[1]).Replace(',','.'));
+            if (v1[1] != E.mpty)
+            {
+                Console.WriteLine(String.Format("{0:0.00}", v1[1]).Replace(',', '.'));
+            }
+            else
+            {
+                Console.WriteLine("0.00");
+            }
         }
 
     }
