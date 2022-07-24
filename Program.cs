@@ -37,6 +37,7 @@ namespace HILLS2
                 {
                     if (data.v2[0] != E.mpty && data.v2[1] != E.mpty)
                     {
+                        data.v2[0] = (data.v1[0] + data.v2[0])% 360;
                         double alpha = GetAlpha(data.v1[0], data.v2[0]);
                         double a = data.v1[1];
                         double b = data.v2[1];
